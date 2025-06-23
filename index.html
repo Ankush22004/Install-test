@@ -3,23 +3,59 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PWA Install Button Test</title>
-  <link rel="manifest" href="manifest.json">
+  <title>Rohit PWA Install</title>
+
+  <!-- Link to manifest -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0d6efd" />
+
+  <!-- Install Button Style -->
+  <style>
+    #installBtn {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #0d6efd;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 50%;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      font-size: 24px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <h1>📲 Rohit's Install Button Test</h1>
-  <button id="installBtn" onclick="installApp()" style="
-    display: none;
-    padding: 10px 16px;
-    font-size: 16px;
-    background-color: #0d6efd;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  ">
-    📲 Install App
-  </button>
-  <script src="install.js"></script>
+  <h2 style="text-align:center;">📲 Rohit's Universal Install Button</h2>
+  <button id="installBtn" onclick="installApp()">⬇️</button>
+
+  <!-- Install JS Logic -->
+  <script>
+    let deferredPrompt;
+    const installBtn = document.getElementById('installBtn');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = 'inline-block';
+    });
+
+    function installApp() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choice) => {
+          if (choice.outcome === 'accepted') {
+            console.log('✅ App installed');
+          } else {
+            console.log('❌ Install dismissed');
+          }
+          deferredPrompt = null;
+          installBtn.style.display = 'none';
+        });
+      }
+    }
+  </script>
 </body>
 </html>
